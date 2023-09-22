@@ -1,18 +1,14 @@
 from django.http import HttpResponse, HttpResponseNotFound
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
+
+from .models import Women
 
 menu = [
     {'title': 'О сайте', 'url_name': 'about'},
     {'title': 'Добавить статью', 'url_name': 'add_page'},
     {'title': 'Обратная связь', 'url_name': 'contact'},
     {'title': 'Войти', 'url_name': 'login'}
-]
-
-data_db = [
-    {'id': 1, 'title': 'Анджелина Джоли', 'content': 'Биография', 'is_published': True},
-    {'id': 2, 'title': 'Марго Робби', 'content': 'Биография', 'is_published': False},
-    {'id': 3, 'title': 'Джулия Робертс', 'content': 'Биография', 'is_published': True},
 ]
 
 cats_db = [
@@ -23,10 +19,11 @@ cats_db = [
 
 
 def index(request):
+    posts = Women.objects.filter(is_published=1)
     data = {
         'title': 'Главная страница',
         'menu': menu,
-        'posts': data_db,
+        'posts': posts,
         'cat_selected': 0,
     }
     return render(request, 'women/index.html', context=data)
@@ -40,8 +37,16 @@ def page_not_found(request, exception):
     return HttpResponseNotFound('<h2>Страница не найдена</h2>')
 
 
-def show_post(request, post_id):
-    return HttpResponse(f'Отображение статьи с id: {post_id}')
+def show_post(request, post_slug):
+    post = get_object_or_404(Women, slug=post_slug)
+
+    data = {
+        'title': post.title,
+        'menu': menu,
+        'post': post,
+        'cat_selected': 1,
+    }
+    return render(request, 'women/post.html', context=data)
 
 
 def addpage(request):
