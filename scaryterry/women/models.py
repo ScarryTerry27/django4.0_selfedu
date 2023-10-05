@@ -57,13 +57,13 @@ class TagPost(models.Model):
         return self.tag
 
     def get_absolute_url(self):
-        print('hi')
         return reverse('tag', kwargs={'tag_slug': self.slug})
 
 
 class Husband(models.Model):
     name = models.CharField(max_length=100)
     age = models.IntegerField(null=True)
+    m_count = models.IntegerField(blank=True, default=0)
 
     def __str__(self):
         return self.name
