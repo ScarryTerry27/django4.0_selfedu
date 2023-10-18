@@ -22,10 +22,12 @@ class MarriedFilter(admin.SimpleListFilter):
 
 @admin.register(Women)
 class WomenAdmin(admin.ModelAdmin):
-    fields = ('title', 'slug', 'content', 'cat', 'husband')
+    fields = ('title', 'slug', 'content', 'cat', 'husband', 'tags')
+    filter_horizontal = ['tags']  # виджет для работы с тегами
+    # filter_vertical = ['tags']
     # exclude = ('is_published', 'tags') # исключает поля
     # readonly_fields = ('slug', )  # поля только для чтения
-    prepopulated_fields = {'slug': ('title', )}
+    prepopulated_fields = {'slug': ('title', )}  # для авто создания слага
     list_display = ('title', 'time_create', 'is_published', 'cat', 'brief_info')
     list_display_links = ('title', )
     ordering = ('time_create', 'title')
